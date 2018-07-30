@@ -9,10 +9,12 @@ class App extends Component {
   	img: '',
     name: '',
     id: null,
-    dropDownId: 'empId'
+    depart: '',
+    dropDownId: 'empId',
+    dropDownDepart: 'depart',
+    hr: [1,2,3,4,5],
+    engr: [6,7,8,9,10]
   }
-
- 
 
   componentWillReceiveProps (nextProps) {
   	if(nextProps.data) {
@@ -27,9 +29,10 @@ class App extends Component {
 	    	img: '',
         name: '',
         id: null,
-        loading: false
+        loading: false,
+        depart: ''
 	    })
-    this.reset(this.state.dropDownId)
+    this.reset(this.state.dropDownId, this.state.dropDownDepart)
 	 }
    this.setState({
     loading: false
@@ -56,36 +59,53 @@ class App extends Component {
         id: null
       })
     }
-    let dropDownId = e.target.id == 'depart' ? 'empId' : 'depart'
-    this.reset(dropDownId)
+  }
+
+  // Select Department
+  handleDepart(e) {
+    if (e.target.value == "HR") {
+      this.setState({
+        depart: e.target.value
+      })
+    } else if(e.target.value == "ENGINEERING") {
+      this.setState({
+        depart: e.target.value
+      })
+    }
   }
 
   // Reset DropDown
-  reset(dropDownId) {
-    let dropDown = document.getElementById(dropDownId);
-    dropDown.selectedIndex = 0;
+  reset(dropDownId, dropDownDepart) {
+    let id = document.getElementById(dropDownId);
+    let depart = document.getElementById(dropDownDepart);
+    id.selectedIndex = 0;
+    depart.selectedIndex = 0;
   }
 
   render() {
+    let options = null
+    if (this.state.depart == "ENGINEERING") {
+      options = this.state.engr.map((item, key) =>
+          <option value={item} key={key}>{item}</option>
+      )
+    } else if (this.state.depart == "HR") {
+      options = this.state.hr.map((item, key) =>
+          <option value={item} key={key}>{item}</option>
+      )
+    }
+
     return (
       <div className="App">
         <label>Departments: </label>
-        <select id="depart" ref="departInput" onChange={this.handleId.bind(this)}>
+        <select id="depart" onChange={this.handleDepart.bind(this)}>
           <option value="0">Please select</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
+          <option value="HR">HR</option>
+          <option value="ENGINEERING">ENGINEERING</option>
         </select>
         <label> Employee Id: </label>
-        <select id="empId" ref="empIdInput" onChange={this.handleId.bind(this)}>
+        <select id="empId" onChange={this.handleId.bind(this)}>
           <option value="0">Please select</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
+          {options}
         </select>
         <button style={{margin: '10px'}} onClick={this.handleGetData.bind(this)}>GetDetails</button>
         <button onClick={this.props.clearData}>Clear</button>
