@@ -1,7 +1,7 @@
 import React from 'react';
 import {configure, render, mount} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import DropDown from './DropDown';
+import DropDown from '../components/DropDown';
 
 
 configure({adapter: new Adapter()})
