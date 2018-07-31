@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import * as actionCreators from "./actions/index.js";
-import logo from './logo.svg';
+import DropDown from "./components/DropDown";
+import Details from "./components/Details";
 import './App.css';
 
 class App extends Component {
@@ -51,7 +52,7 @@ class App extends Component {
   handleId(e) {
     if(e.target.value > 0) {
       this.setState({
-        id: parseInt(e.target.value),
+        id: e.target.value,
         dropDownId: e.target.id
       })
     } else {
@@ -63,15 +64,17 @@ class App extends Component {
 
   // Select Department
   handleDepart(e) {
-    if (e.target.value == "HR") {
+    if (e.target.value === "HR") {
       this.setState({
         depart: e.target.value
       })
-    } else if(e.target.value == "ENGINEERING") {
+    } else if(e.target.value === "ENGINEERING") {
       this.setState({
         depart: e.target.value
       })
     }
+    let id = document.getElementById(this.state.dropDownId);
+    id.selectedIndex = 0;
   }
 
   // Reset DropDown
@@ -84,11 +87,11 @@ class App extends Component {
 
   render() {
     let options = null
-    if (this.state.depart == "ENGINEERING") {
+    if (this.state.depart === "ENGINEERING") {
       options = this.state.engr.map((item, key) =>
           <option value={item} key={key}>{item}</option>
       )
-    } else if (this.state.depart == "HR") {
+    } else if (this.state.depart === "HR") {
       options = this.state.hr.map((item, key) =>
           <option value={item} key={key}>{item}</option>
       )
@@ -96,35 +99,25 @@ class App extends Component {
 
     return (
       <div className="App">
-        <label>Departments: </label>
-        <select id="depart" onChange={this.handleDepart.bind(this)}>
-          <option value="0">Please select</option>
-          <option value="HR">HR</option>
-          <option value="ENGINEERING">ENGINEERING</option>
-        </select>
-        <label> Employee Id: </label>
-        <select id="empId" onChange={this.handleId.bind(this)}>
-          <option value="0">Please select</option>
-          {options}
-        </select>
-        <button style={{margin: '10px'}} onClick={this.handleGetData.bind(this)}>GetDetails</button>
-        <button onClick={this.props.clearData}>Clear</button>
-       {this.props.data &&
-        <div className="logo">
-          <img src={this.state.img}/>
-          <span style={{paddingRight: '0px'}}>
-            <label>Id: </label>{this.state.id}
-          </span>
-          <span style={{paddingLeft: '100px'}}>
-            <label>Name: </label>{this.state.name}
-          </span>
-        </div>
-      }
-      {this.state.loading &&
-       <div>
-        <p>loading...</p>
-       </div>
-      }
+        <DropDown
+          handleDepart={this.handleDepart.bind(this)}
+          handleId={this.handleId.bind(this)}
+          options={options}
+          handleGetData={this.handleGetData.bind(this)}
+          clearData={this.props.clearData}
+          />
+        {this.props.data &&
+          <Details
+            id={this.state.id}
+            name={this.state.name}
+            img={this.state.img}
+          />
+        }
+        {this.state.loading &&
+         <div>
+          <p>loading...</p>
+         </div>
+        }
       </div>
     );
   }
